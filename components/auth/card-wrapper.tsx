@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/card';
 
 interface CardWrapperProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   headerLabel: string;
   backButtonLabel: string;
   backButtonHref: string;

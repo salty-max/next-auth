@@ -63,12 +63,12 @@ export function RegisterForm() {
               name='name'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       placeholder='johndoe'
-                      autoComplete='username'
+                      autoComplete='name'
                       disabled={isPending}
                     />
                   </FormControl>

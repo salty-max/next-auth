@@ -1,9 +1,13 @@
+'use client';
+
 import { Lock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { LoginButton } from '@/components/auth/login-button';
 import { Button } from '@/components/ui/button';
 
 export default function Home() {
+  const router = useRouter();
   return (
     <main className='flex h-screen flex-col items-center justify-center'>
       <div className='flex space-y-6 flex-col items-center'>
@@ -13,7 +17,9 @@ export default function Home() {
         </div>
         <p className='text-lg'>A simple authentication service</p>
         <LoginButton>
-          <Button size='lg'>Sign in</Button>
+          <Button size='lg' onClick={() => router.push('/auth/login')}>
+            Sign in
+          </Button>
         </LoginButton>
       </div>
     </main>

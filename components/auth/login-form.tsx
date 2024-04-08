@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -24,6 +25,12 @@ import { LoginSchema } from '@/schemas';
 export function LoginForm() {
   const [error, setError] = React.useState<string | undefined>('');
   const [isPending, startTransition] = React.useTransition();
+
+  const searchParams = useSearchParams();
+  const urlError: string =
+    searchParams.get('error') === 'OAuthAccountNotLinked'
+      ? 'Email already in use with another provider'
+      : 'Something went wrong.';
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -94,7 +101,7 @@ export function LoginForm() {
               )}
             />
           </div>
-          <FormError message={error} />
+          <FormError message={error ?? urlError} />
           <Button type='submit' className='w-full' disabled={isPending}>
             Sign in
           </Button>
