@@ -1,6 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { LoaderCircle } from 'lucide-react';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
@@ -118,6 +119,9 @@ export function RegisterForm() {
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button type='submit' className='w-full' disabled={isPending}>
+            {isPending && (
+              <LoaderCircle className='mr-2 w-4 h-4 animate-spin' />
+            )}
             Sign up
           </Button>
         </form>
