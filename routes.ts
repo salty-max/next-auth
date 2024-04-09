@@ -9,7 +9,13 @@ export const publicRoutes = ['/', '/auth/new-verification'];
  * These routes will redirect logged in users to `/settings`.
  * @type {string[]}
  */
-export const authRoutes = ['/auth/login', '/auth/register', '/auth/error'];
+export const authRoutes = [
+  '/auth/login',
+  '/auth/register',
+  '/auth/error',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+];
 
 /**
  * The prefix for api authentication routes.
@@ -23,3 +29,16 @@ export const apiAuthPrefix = '/api/auth';
  * @type {string}
  */
 export const DEFAULT_LOGIN_REDIRECT = '/settings';
+
+export const Routes = {
+  home: '/',
+  settings: '/settings',
+  auth: {
+    login: '/auth/login',
+    register: '/auth/register',
+    error: '/auth/error',
+    forgotPassword: '/auth/forgot-password',
+    newVerification: '/auth/new-verification',
+    resetPassword: '/auth/reset-password',
+  },
+};

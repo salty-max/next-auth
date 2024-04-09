@@ -3,6 +3,7 @@ import type { UserRole } from '@prisma/client';
 import NextAuth, { type DefaultSession } from 'next-auth';
 
 import authConfig from '@/auth.config';
+import { Routes } from '@/routes';
 
 import { getUserById } from './data/user';
 import { db } from './lib/db';
@@ -24,8 +25,8 @@ export const {
   adapter: PrismaAdapter(db),
   session: { strategy: 'jwt' },
   pages: {
-    signIn: '/auth/login',
-    error: '/auth/error',
+    signIn: Routes.auth.login,
+    error: Routes.auth.error,
   },
   events: {
     async linkAccount({ user }) {

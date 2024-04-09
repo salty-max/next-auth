@@ -6,6 +6,7 @@ import React from 'react';
 
 import { newVerification } from '@/actions/new-verification';
 import { CardWrapper } from '@/components/auth/card-wrapper';
+import { Routes } from '@/routes';
 
 import { FormError } from '../form-error';
 import { FormSuccess } from '../form-success';
@@ -41,7 +42,7 @@ export const NewVerificationForm = () => {
     <CardWrapper
       headerLabel='Confirm your email address'
       backButtonLabel='Back to login'
-      backButtonHref='/auth/login'
+      backButtonHref={Routes.auth.login}
     >
       <div className='flex items-center w-full justify-center'>
         {!success && !error && (

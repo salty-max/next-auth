@@ -20,6 +20,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Routes } from '@/routes';
 import { RegisterSchema } from '@/schemas';
 
 export function RegisterForm() {
@@ -53,7 +54,7 @@ export function RegisterForm() {
     <CardWrapper
       headerLabel='Create an account'
       backButtonLabel='Already have an account?'
-      backButtonHref='/auth/login'
+      backButtonHref={Routes.auth.login}
       showSocials
     >
       <Form {...form}>

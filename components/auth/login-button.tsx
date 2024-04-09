@@ -2,6 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 
+import { Routes } from '@/routes';
+
 interface LoginButtonProps {
   children: React.ReactNode;
   mode?: 'modal' | 'redirect';
@@ -16,7 +18,7 @@ export function LoginButton({
   const router = useRouter();
 
   const handleClick = () => {
-    router.push('/auth/login');
+    router.push(Routes.auth.login);
   };
 
   if (mode === 'modal') {

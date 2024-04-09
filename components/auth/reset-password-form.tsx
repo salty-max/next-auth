@@ -2,13 +2,12 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderCircle } from 'lucide-react';
-import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 
-import { login } from '@/actions/login';
+import { resetPassword } from '@/actions/reset-password';
 import { CardWrapper } from '@/components/auth/card-wrapper';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
@@ -23,64 +22,62 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Routes } from '@/routes';
-import { LoginSchema } from '@/schemas';
+import { ResetPasswordSchema } from '@/schemas';
 
-export function LoginForm() {
+export const ResetPasswordForm = () => {
   const [error, setError] = React.useState<string | undefined>('');
   const [success, setSuccess] = React.useState<string | undefined>('');
   const [isPending, startTransition] = React.useTransition();
 
   const searchParams = useSearchParams();
-  const urlError: string =
-    searchParams.get('error') === 'OAuthAccountNotLinked'
-      ? 'Email already in use with another provider'
-      : '';
+  const token = searchParams.get('token');
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof ResetPasswordSchema>>({
+    resolver: zodResolver(ResetPasswordSchema),
     defaultValues: {
-      email: '',
       password: '',
+      confirmPassword: '',
     },
   });
 
   const { handleSubmit, control } = form;
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    setError('');
-    setSuccess('');
+  function onSubmit(values: z.infer<typeof ResetPasswordSchema>) {
+    if (success || error) return;
+
+    if (!token) {
+      setError('Missing token.');
+      return;
+    }
 
     startTransition(() => {
-      login(values).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
-      });
+      resetPassword(token, values).then((data) =>
+        data.error ? setError(data.error) : setSuccess(data.success)
+      );
     });
-  };
+  }
 
   return (
     <CardWrapper
-      headerLabel='Welcome back'
-      backButtonLabel="Don't have an account?"
-      backButtonHref={Routes.auth.register}
-      showSocials
+      headerLabel='Reset your password'
+      backButtonLabel='Back to login'
+      backButtonHref={Routes.auth.login}
     >
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
           <div className='space-y-4'>
             <FormField
+              name='password'
               control={control}
-              name='email'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel htmlFor='password'>Password</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      type='email'
-                      placeholder='johndoe@example.com'
-                      autoComplete='email'
-                      disabled={isPending}
+                      type='password'
+                      id='password'
+                      placeholder='Enter your password'
                     />
                   </FormControl>
                   <FormMessage />
@@ -88,40 +85,36 @@ export function LoginForm() {
               )}
             />
             <FormField
+              name='confirmPassword'
               control={control}
-              name='password'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel htmlFor='confirmPassword'>
+                    Confirm Password
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='password'
-                      placeholder='********'
-                      autoComplete='current-password'
-                      disabled={isPending}
+                      id='confirmPassword'
+                      placeholder='Confirm your password'
                     />
                   </FormControl>
                   <FormMessage />
-                  <Button variant='link' className='p-0 font-normal' asChild>
-                    <Link href={Routes.auth.forgotPassword}>
-                      Forgot password?
-                    </Link>
-                  </Button>
                 </FormItem>
               )}
             />
           </div>
-          <FormError message={error ?? urlError} />
+          <FormError message={error} />
           <FormSuccess message={success} />
           <Button type='submit' className='w-full' disabled={isPending}>
             {isPending && (
               <LoaderCircle className='mr-2 w-4 h-4 animate-spin' />
             )}
-            Sign in
+            Reset password
           </Button>
         </form>
       </Form>
     </CardWrapper>
   );
-}
+};

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import { LoginButton } from '@/components/auth/login-button';
 import { Button } from '@/components/ui/button';
+import { Routes } from '@/routes';
 
 export default function Home() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function Home() {
         </div>
         <p className='text-lg'>A simple authentication service</p>
         <LoginButton>
-          <Button size='lg' onClick={() => router.push('/auth/login')}>
+          <Button size='lg' onClick={() => router.push(Routes.auth.login)}>
             Sign in
           </Button>
         </LoginButton>
