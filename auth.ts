@@ -8,14 +8,6 @@ import { getUserById } from '@/data/user';
 import { db } from '@/lib/db';
 import { Routes } from '@/routes';
 
-declare module 'next-auth' {
-  interface Session {
-    user: {
-      role: 'ADMIN' | 'USER';
-    } & DefaultSession['user'];
-  }
-}
-
 export const {
   handlers: { GET, POST },
   auth,
@@ -62,14 +54,17 @@ export const {
       return true;
     },
     async session({ token, session }) {
-      if (token.sub && session.user) {
-        session.user.id = token.sub;
-      }
+      if (session.user) {
+        if (token.sub) {
+          session.user.id = token.sub;
+        }
 
-      if (token.role && session.user) {
-        session.user.role = token.role as UserRole;
-      }
+        if (token.role) {
+          session.user.role = token.role as UserRole;
+        }
 
+        session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
+      }
       return session;
     },
     async jwt({ token }) {
@@ -80,6 +75,7 @@ export const {
       if (!user) return token;
 
       token.role = user.role;
+      token.isTwoFactorEnabled = user.isTwoFactorEnabled;
 
       return token;
     },
