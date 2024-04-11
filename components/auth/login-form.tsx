@@ -22,12 +22,19 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
 import { Routes } from '@/routes';
 import { LoginSchema } from '@/schemas';
 
 export function LoginForm() {
   const [error, setError] = React.useState<string | undefined>('');
   const [success, setSuccess] = React.useState<string | undefined>('');
+  const [showTwoFactor, setShowTwoFactor] = React.useState<boolean>(false);
   const [isPending, startTransition] = React.useTransition();
 
   const searchParams = useSearchParams();
@@ -51,10 +58,23 @@ export function LoginForm() {
     setSuccess('');
 
     startTransition(() => {
-      login(values).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
-      });
+      login(values)
+        .then((data) => {
+          if (data?.error) {
+            form.reset();
+            setError(data.error);
+          }
+
+          if (data?.success) {
+            form.reset();
+            setSuccess(data.success);
+          }
+
+          if (data?.twoFactor) {
+            setShowTwoFactor(true);
+          }
+        })
+        .catch(() => setError('Something went wrong.'));
     });
   };
 
@@ -63,54 +83,94 @@ export function LoginForm() {
       headerLabel='Welcome back'
       backButtonLabel="Don't have an account?"
       backButtonHref={Routes.auth.register}
-      showSocials
+      showSocials={!showTwoFactor}
     >
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
           <div className='space-y-4'>
-            <FormField
-              control={control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='email'
-                      placeholder='johndoe@example.com'
-                      autoComplete='email'
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name='password'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type='password'
-                      placeholder='********'
-                      autoComplete='current-password'
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                  <Button variant='link' className='p-0 font-normal' asChild>
-                    <Link href={Routes.auth.forgotPassword}>
-                      Forgot password?
-                    </Link>
-                  </Button>
-                </FormItem>
-              )}
-            />
+            {!showTwoFactor && (
+              <>
+                <FormField
+                  control={control}
+                  name='email'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder='johndoe@example.com'
+                          autoFocus
+                          autoComplete='email'
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name='password'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type='password'
+                          placeholder='********'
+                          autoComplete='current-password'
+                          disabled={isPending}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                      <Button
+                        variant='link'
+                        className='p-0 font-normal'
+                        asChild
+                      >
+                        <Link href={Routes.auth.forgotPassword}>
+                          Forgot password?
+                        </Link>
+                      </Button>
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+            {showTwoFactor && (
+              <FormField
+                control={control}
+                name='code'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Two-factor code</FormLabel>
+                    <FormControl>
+                      <InputOTP
+                        {...field}
+                        maxLength={6}
+                        autoFocus
+                        autoComplete='one-time-code'
+                      >
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                        </InputOTPGroup>
+                        <InputOTPSeparator />
+                        <InputOTPGroup>
+                          <InputOTPSlot index={3} />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
           </div>
           <FormError message={error ?? urlError} />
           <FormSuccess message={success} />
@@ -118,7 +178,7 @@ export function LoginForm() {
             {isPending && (
               <LoaderCircle className='mr-2 w-4 h-4 animate-spin' />
             )}
-            Sign in
+            {showTwoFactor ? 'Verify code' : 'Login'}
           </Button>
         </form>
       </Form>
