@@ -1,13 +1,13 @@
 import type { Metadata } from 'next';
-import { Nunito } from 'next/font/google';
+import { Quicksand } from 'next/font/google';
 import './globals.css';
 import { SessionProvider } from 'next-auth/react';
 
 import { auth } from '@/auth';
 import { ThemeProvider } from '@/components/theme/theme-provider';
-import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { cn } from '@/lib/utils';
 
-const nunito = Nunito({ subsets: ['latin'] });
+const fontSans = Quicksand({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Next auth',
@@ -23,7 +23,7 @@ export default async function RootLayout({
   return (
     <SessionProvider session={session}>
       <html lang='en' suppressHydrationWarning>
-        <body className={nunito.className} suppressHydrationWarning>
+        <body className={cn(fontSans.className)} suppressHydrationWarning>
           <ThemeProvider
             attribute='class'
             defaultTheme='system'

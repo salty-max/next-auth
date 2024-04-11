@@ -1,6 +1,5 @@
+import { CardWrapper } from '@/components/auth/card-wrapper';
 import { Routes } from '@/routes';
-
-import { CardWrapper } from './card-wrapper';
 
 export function ErrorCard() {
   return (

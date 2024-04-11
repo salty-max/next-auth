@@ -4,6 +4,7 @@ import { DoorOpen, LogOut, User } from 'lucide-react';
 
 import { LogoutButton } from '@/components/auth/logout-button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,8 +13,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useActiveUser } from '@/hooks/use-active-user';
 import { cn } from '@/lib/utils';
-
-import { Button, buttonVariants } from '../ui/button';
 
 export function UserButton() {
   const user = useActiveUser();

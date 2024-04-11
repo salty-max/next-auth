@@ -1,9 +1,8 @@
 import { Server, TabletSmartphone } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { ExtendedUser } from '@/next-auth';
-
-import { Badge } from './ui/badge';
 
 const formattedUserInfo = (user: ExtendedUser) => [
   { key: 'id', label: 'Id', value: user.id },
