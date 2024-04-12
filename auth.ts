@@ -1,12 +1,14 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import type { UserRole } from '@prisma/client';
-import NextAuth, { type DefaultSession } from 'next-auth';
+import NextAuth from 'next-auth';
 
 import authConfig from '@/auth.config';
 import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation';
 import { getUserById } from '@/data/user';
 import { db } from '@/lib/db';
 import { Routes } from '@/routes';
+
+import { getAccountByUserId } from './data/account';
 
 export const {
   handlers: { GET, POST },
@@ -63,6 +65,9 @@ export const {
           session.user.role = token.role as UserRole;
         }
 
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.isOAuth = token.isOAuth as boolean;
         session.user.isTwoFactorEnabled = token.isTwoFactorEnabled as boolean;
       }
       return session;
@@ -74,6 +79,11 @@ export const {
 
       if (!user) return token;
 
+      const account = await getAccountByUserId(user.id);
+
+      token.isOAuth = !!account;
+      token.name = user.name;
+      token.email = user.email;
       token.role = user.role;
       token.isTwoFactorEnabled = user.isTwoFactorEnabled;
 
