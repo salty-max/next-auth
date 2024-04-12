@@ -33,6 +33,9 @@ export const DEFAULT_LOGIN_REDIRECT = '/settings';
 export const Routes = {
   home: '/',
   settings: '/settings',
+  server: '/server',
+  client: '/client',
+  admin: '/admin',
   auth: {
     login: '/auth/login',
     register: '/auth/register',
