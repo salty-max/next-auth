@@ -17,7 +17,10 @@ import {
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes';
 import { LoginSchema } from '@/schemas';
 
-export async function login(values: z.infer<typeof LoginSchema>) {
+export async function login(
+  values: z.infer<typeof LoginSchema>,
+  callbackUrl?: string | null
+) {
   const validated = LoginSchema.safeParse(values);
 
   if (!validated.success) {
@@ -105,7 +108,7 @@ export async function login(values: z.infer<typeof LoginSchema>) {
     await signIn('credentials', {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
+      redirectTo: callbackUrl ?? DEFAULT_LOGIN_REDIRECT,
     });
   } catch (error) {
     if (error instanceof AuthError) {
