@@ -12,7 +12,8 @@
     "prisma:view": "pnpx prisma studio",
     "db:reset": "pnpx prisma migrate reset",
     "db:push": "pnpx prisma db push",
-    "ui:add": "pnpx shadcn-ui@latest add"
+    "ui:add": "pnpx shadcn-ui@latest add",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.2",
